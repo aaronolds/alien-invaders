@@ -1,0 +1,85 @@
+// Pixel-art sprite definitions and rendering helper
+// Each sprite is a 2D array of 1s and 0s
+
+const SPRITES = {
+    player: [
+        [0,0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,0,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+
+    alien1: [ // top row — 30 pts
+        [0,0,1,0,0,0,0,0,1,0,0],
+        [0,0,0,1,0,0,0,1,0,0,0],
+        [0,0,1,1,1,1,1,1,1,0,0],
+        [0,1,1,0,1,1,1,0,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,1,1,1,1,1,1,1,0,1],
+        [1,0,1,0,0,0,0,0,1,0,1],
+        [0,0,0,1,1,0,1,1,0,0,0],
+    ],
+
+    alien2: [ // middle rows — 20 pts
+        [0,0,0,1,0,0,0,1,0,0,0],
+        [0,0,0,0,1,0,1,0,0,0,0],
+        [0,0,0,1,1,1,1,1,0,0,0],
+        [0,0,1,1,0,1,0,1,1,0,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [0,1,0,1,1,1,1,1,0,1,0],
+        [0,1,0,1,0,0,0,1,0,1,0],
+        [0,0,0,0,1,0,1,0,0,0,0],
+    ],
+
+    alien3: [ // bottom rows — 10 pts
+        [0,0,0,0,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,0,0,0,0,0,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,1,0,1,0,1,0,1,0,0],
+        [0,1,0,1,0,0,0,1,0,1,0],
+    ],
+
+    playerBullet: [
+        [1],
+        [1],
+        [1],
+        [1],
+    ],
+
+    alienBullet: [
+        [1],
+        [0],
+        [1],
+        [0],
+        [1],
+    ],
+};
+
+function drawSprite(ctx, spriteData, x, y, scale, color) {
+    ctx.fillStyle = color;
+    for (let row = 0; row < spriteData.length; row++) {
+        for (let col = 0; col < spriteData[row].length; col++) {
+            if (spriteData[row][col]) {
+                ctx.fillRect(
+                    x + col * scale,
+                    y + row * scale,
+                    scale,
+                    scale
+                );
+            }
+        }
+    }
+}
+
+function getSpriteWidth(spriteData, scale) {
+    return spriteData[0].length * scale;
+}
+
+function getSpriteHeight(spriteData, scale) {
+    return spriteData.length * scale;
+}
