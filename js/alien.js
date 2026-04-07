@@ -1,5 +1,5 @@
 class AlienGrid {
-    constructor(canvasWidth) {
+    constructor(canvasWidth, levelConfig) {
         this.canvasWidth = canvasWidth;
         this.scale = 3;
         this.cols = 11;
@@ -7,11 +7,17 @@ class AlienGrid {
         this.padding = 16;
         this.aliens = [];
         this.direction = 1; // 1 = right, -1 = left
-        this.speed = 30;
+        this.speed = levelConfig.speed;
         this.dropDistance = 20;
         this.bullets = [];
-        this.shootInterval = 1.5; // seconds between alien shots
+        this.shootInterval = levelConfig.shootInterval;
         this.shootTimer = this.shootInterval;
+
+        // Divebomb config
+        this.divebombEnabled = levelConfig.divebombEnabled;
+        this.divebombRate = levelConfig.divebombRate;
+        this.maxDivebombers = levelConfig.maxDivebombers;
+        this.divebombTimer = this.divebombRate;
 
         this._initGrid();
     }
@@ -44,33 +50,119 @@ class AlienGrid {
                     alive: true,
                     col: col,
                     row: row,
+                    // Divebomb state
+                    divebombing: false,
+                    divebombPhase: null, // 'descending' or 'returning'
+                    homeX: 0,
+                    homeY: 0,
                 });
             }
         }
+
+        // Randomly convert 4-5 aliens into seahawk type
+        const count = 4 + Math.floor(Math.random() * 2);
+        const indices = [];
+        while (indices.length < count) {
+            const i = Math.floor(Math.random() * this.aliens.length);
+            if (!indices.includes(i)) indices.push(i);
+        }
+        for (const i of indices) {
+            const a = this.aliens[i];
+            a.sprite = SPRITES.seahawk;
+            a.points = 100;
+            a.color = '#69BE28';
+            a.width = getSpriteWidth(a.sprite, this.scale);
+            a.height = getSpriteHeight(a.sprite, this.scale);
+        }
     }
 
-    update(dt) {
+    update(dt, playerX) {
         const living = this.aliens.filter(a => a.alive);
         if (living.length === 0) return;
 
-        // Move horizontally
+        const gridAliens = living.filter(a => !a.divebombing);
+
+        // Move grid aliens horizontally
         let hitEdge = false;
-        for (const a of living) {
+        for (const a of gridAliens) {
             a.x += this.speed * this.direction * dt;
         }
 
-        // Check bounds
-        for (const a of living) {
-            if (a.x + a.width >= this.canvasWidth - 10 || a.x <= 10) {
+        // Check bounds on grid aliens only
+        for (const a of gridAliens) {
+            if (a.x + a.width >= this.canvasWidth - 10) {
                 hitEdge = true;
+                // Clamp to right edge to prevent getting stuck
+                const overshoot = (a.x + a.width) - (this.canvasWidth - 10);
+                for (const g of gridAliens) g.x -= overshoot;
+                break;
+            } else if (a.x <= 10) {
+                hitEdge = true;
+                // Clamp to left edge
+                const overshoot = 10 - a.x;
+                for (const g of gridAliens) g.x += overshoot;
                 break;
             }
         }
 
         if (hitEdge) {
             this.direction *= -1;
-            for (const a of living) {
+            for (const a of gridAliens) {
                 a.y += this.dropDistance;
+            }
+        }
+
+        // Update home positions for all living aliens (grid aliens track their current pos)
+        for (const a of gridAliens) {
+            a.homeX = a.x;
+            a.homeY = a.y;
+        }
+
+        // Divebomb trigger
+        if (this.divebombEnabled) {
+            this.divebombTimer -= dt;
+            const activeDivers = living.filter(a => a.divebombing).length;
+            if (this.divebombTimer <= 0 && activeDivers < this.maxDivebombers) {
+                this.divebombTimer = this.divebombRate * (0.5 + Math.random());
+                const candidates = gridAliens.filter(a => !a.divebombing);
+                if (candidates.length > 0) {
+                    const diver = candidates[Math.floor(Math.random() * candidates.length)];
+                    diver.divebombing = true;
+                    diver.divebombPhase = 'descending';
+                    diver.homeX = diver.x;
+                    diver.homeY = diver.y;
+                    diver.divebombTargetX = playerX !== undefined ? playerX : diver.x;
+                }
+            }
+        }
+
+        // Update divebombing aliens
+        for (const a of living.filter(a => a.divebombing)) {
+            const diveSpeed = this.speed * 6;
+            if (a.divebombPhase === 'descending') {
+                a.y += diveSpeed * dt;
+                // Steer toward target x
+                const dx = a.divebombTargetX - a.x;
+                a.x += Math.sign(dx) * Math.min(Math.abs(dx), diveSpeed * 0.8 * dt);
+                // Past bottom of screen — start returning
+                if (a.y > 620) {
+                    a.divebombPhase = 'returning';
+                }
+            } else if (a.divebombPhase === 'returning') {
+                // Move back toward home position
+                const dx = a.homeX - a.x;
+                const dy = a.homeY - a.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 5) {
+                    a.x = a.homeX;
+                    a.y = a.homeY;
+                    a.divebombing = false;
+                    a.divebombPhase = null;
+                } else {
+                    const returnSpeed = diveSpeed * 1.2;
+                    a.x += (dx / dist) * returnSpeed * dt;
+                    a.y += (dy / dist) * returnSpeed * dt;
+                }
             }
         }
 
@@ -124,7 +216,7 @@ class AlienGrid {
     lowestY() {
         let maxY = 0;
         for (const a of this.aliens) {
-            if (a.alive) {
+            if (a.alive && !a.divebombing) {
                 maxY = Math.max(maxY, a.y + a.height);
             }
         }
