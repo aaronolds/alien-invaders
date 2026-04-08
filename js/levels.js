@@ -1,9 +1,9 @@
 const LEVELS = [
-    { speed: 30, shootInterval: 1.5, divebombEnabled: false, divebombRate: 0,   maxDivebombers: 0 },
-    { speed: 40, shootInterval: 1.3, divebombEnabled: true,  divebombRate: 4,   maxDivebombers: 1 },
-    { speed: 50, shootInterval: 1.1, divebombEnabled: true,  divebombRate: 3,   maxDivebombers: 2 },
-    { speed: 60, shootInterval: 0.9, divebombEnabled: true,  divebombRate: 2.5, maxDivebombers: 2 },
-    { speed: 75, shootInterval: 0.7, divebombEnabled: true,  divebombRate: 2,   maxDivebombers: 3 },
+    { speed: 30, shootInterval: 1.5, divebombEnabled: false, divebombRate: 0,   maxDivebombers: 0, speedBoostPerDrop: 3 },
+    { speed: 40, shootInterval: 1.3, divebombEnabled: true,  divebombRate: 4,   maxDivebombers: 1, speedBoostPerDrop: 5 },
+    { speed: 50, shootInterval: 1.1, divebombEnabled: true,  divebombRate: 3,   maxDivebombers: 2, speedBoostPerDrop: 7 },
+    { speed: 60, shootInterval: 0.9, divebombEnabled: true,  divebombRate: 2.5, maxDivebombers: 2, speedBoostPerDrop: 10 },
+    { speed: 75, shootInterval: 0.7, divebombEnabled: true,  divebombRate: 2,   maxDivebombers: 3, speedBoostPerDrop: 14 },
 ];
 
 function getLevelConfig(level) {
@@ -16,5 +16,6 @@ function getLevelConfig(level) {
         divebombEnabled: true,
         divebombRate: Math.max(2 - extra * 0.15, 0.6),
         maxDivebombers: Math.min(3 + Math.floor(extra / 2), 8),
+        speedBoostPerDrop: Math.min(14 + extra * 3, 30),
     };
 }

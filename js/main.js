@@ -52,7 +52,7 @@
 
     function startGame() {
         player = new Player(W, H);
-        alienGrid = new AlienGrid(W, getLevelConfig(0));
+        alienGrid = new AlienGrid(W, H, getLevelConfig(0));
         shields = createShields(W, player.y - 70);
         gameState.state = 'playing';
         gameState.score = 0;
@@ -63,7 +63,7 @@
     }
 
     function initLevel(level) {
-        alienGrid = new AlienGrid(W, getLevelConfig(level));
+        alienGrid = new AlienGrid(W, H, getLevelConfig(level));
         shields = createShields(W, player.y - 70);
         lastTime = performance.now();
     }

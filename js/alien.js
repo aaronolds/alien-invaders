@@ -1,6 +1,7 @@
 class AlienGrid {
-    constructor(canvasWidth, levelConfig) {
+    constructor(canvasWidth, canvasHeight, levelConfig) {
         this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.scale = 3;
         this.cols = 11;
         this.rows = 5;
@@ -12,6 +13,7 @@ class AlienGrid {
         this.bullets = [];
         this.shootInterval = levelConfig.shootInterval;
         this.shootTimer = this.shootInterval;
+        this.speedBoostPerDrop = levelConfig.speedBoostPerDrop;
 
         // Divebomb config
         this.divebombEnabled = levelConfig.divebombEnabled;
@@ -107,6 +109,7 @@ class AlienGrid {
 
         if (hitEdge) {
             this.direction *= -1;
+            this.speed += this.speedBoostPerDrop;
             for (const a of gridAliens) {
                 a.y += this.dropDistance;
             }
@@ -145,7 +148,7 @@ class AlienGrid {
                 const dx = a.divebombTargetX - a.x;
                 a.x += Math.sign(dx) * Math.min(Math.abs(dx), diveSpeed * 0.8 * dt);
                 // Past bottom of screen — start returning
-                if (a.y > 620) {
+                if (a.y > this.canvasHeight + 20) {
                     a.divebombPhase = 'returning';
                 }
             } else if (a.divebombPhase === 'returning') {
@@ -183,7 +186,7 @@ class AlienGrid {
         // Update bullets
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             this.bullets[i].update(dt);
-            if (this.bullets[i].isOffScreen(600)) {
+            if (this.bullets[i].isOffScreen(this.canvasHeight)) {
                 this.bullets.splice(i, 1);
             }
         }

@@ -27,7 +27,7 @@ const Collision = {
             // Player bullets vs shields
             if (!bulletHit) {
                 for (const s of shields) {
-                    if (s.hitTest(br)) {
+                    if (s.hitTestBlast(br, 10)) {
                         player.bullets.splice(bi, 1);
                         break;
                     }
@@ -43,7 +43,7 @@ const Collision = {
             // Check shields first
             let shieldHit = false;
             for (const s of shields) {
-                if (s.hitTest(br)) {
+                if (s.hitTestBlast(br, 10)) {
                     alienGrid.bullets.splice(bi, 1);
                     shieldHit = true;
                     break;

@@ -8,6 +8,7 @@ class Player {
         this.y = canvasHeight - this.height - 20;
         this.speed = 300;
         this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
 
         this.shootCooldown = 0;
         this.shootRate = 0.4; // seconds between shots
@@ -38,7 +39,7 @@ class Player {
         // Update bullets
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             this.bullets[i].update(dt);
-            if (this.bullets[i].isOffScreen(600)) {
+            if (this.bullets[i].isOffScreen(this.canvasHeight)) {
                 this.bullets.splice(i, 1);
             }
         }
