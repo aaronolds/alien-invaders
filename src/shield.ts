@@ -1,5 +1,14 @@
 class Shield {
-    constructor(x, y) {
+    x: number;
+    y: number;
+    blockSize: number;
+    cols: number;
+    rows: number;
+    width: number;
+    height: number;
+    blocks: boolean[][];
+
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
         this.blockSize = 3;
@@ -10,9 +19,9 @@ class Shield {
         this.blocks = this._initBlocks();
     }
 
-    _initBlocks() {
+    _initBlocks(): boolean[][] {
         // Classic arch shape
-        const grid = [];
+        const grid: boolean[][] = [];
         for (let r = 0; r < this.rows; r++) {
             grid[r] = [];
             for (let c = 0; c < this.cols; c++) {
@@ -31,7 +40,7 @@ class Shield {
         return grid;
     }
 
-    hitTest(rect) {
+    hitTest(rect: Rect): boolean {
         // Check if a rect overlaps any live block, destroy blocks it touches
         let hit = false;
         const bx1 = Math.floor((rect.x - this.x) / this.blockSize);
@@ -50,7 +59,7 @@ class Shield {
         return hit;
     }
 
-    hitTestBlast(rect, radius) {
+    hitTestBlast(rect: Rect, radius: number): boolean {
         const bx1 = Math.floor((rect.x - this.x) / this.blockSize);
         const by1 = Math.floor((rect.y - this.y) / this.blockSize);
         const bx2 = Math.floor((rect.x + rect.w - 1 - this.x) / this.blockSize);
@@ -89,7 +98,7 @@ class Shield {
     }
 
     // Destroy a larger area for alien body collisions
-    hitTestArea(rect) {
+    hitTestArea(rect: Rect): boolean {
         let hit = false;
         const bx1 = Math.floor((rect.x - this.x) / this.blockSize) - 1;
         const by1 = Math.floor((rect.y - this.y) / this.blockSize) - 1;
@@ -107,7 +116,7 @@ class Shield {
         return hit;
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = '#0f0';
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
@@ -124,12 +133,12 @@ class Shield {
     }
 }
 
-function createShields(canvasWidth, shieldY) {
+function createShields(canvasWidth: number, shieldY: number): Shield[] {
     const count = 4;
     const shieldW = 22 * 3; // cols * blockSize
     const totalW = count * shieldW;
     const gap = (canvasWidth - totalW) / (count + 1);
-    const shields = [];
+    const shields: Shield[] = [];
     for (let i = 0; i < count; i++) {
         shields.push(new Shield(gap + i * (shieldW + gap), shieldY));
     }

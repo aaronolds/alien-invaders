@@ -1,5 +1,20 @@
 class Player {
-    constructor(canvasWidth, canvasHeight) {
+    scale: number;
+    sprite: SpriteData;
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    speed: number;
+    canvasWidth: number;
+    canvasHeight: number;
+    shootCooldown: number;
+    shootRate: number;
+    bullets: Bullet[];
+    lives: number;
+    invulnerable: number;
+
+    constructor(canvasWidth: number, canvasHeight: number) {
         this.scale = 3;
         this.sprite = SPRITES.player;
         this.width = getSpriteWidth(this.sprite, this.scale);
@@ -18,7 +33,7 @@ class Player {
         this.invulnerable = 0; // seconds of invulnerability remaining
     }
 
-    update(dt, keys) {
+    update(dt: number, keys: Record<string, boolean>): void {
         if (keys['ArrowLeft'] || keys['KeyA']) {
             this.x -= this.speed * dt;
         }
@@ -50,20 +65,20 @@ class Player {
         }
     }
 
-    shoot() {
+    shoot(): void {
         const bx = this.x + this.width / 2 - 1.5;
         const by = this.y - 12;
         this.bullets.push(new Bullet(bx, by, -400, SPRITES.playerBullet, '#0f0'));
     }
 
-    hit() {
+    hit(): boolean {
         if (this.invulnerable > 0) return false;
         this.lives--;
         this.invulnerable = 2;
         return true;
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D): void {
         // Blink when invulnerable
         if (this.invulnerable > 0 && Math.floor(this.invulnerable * 10) % 2 === 0) {
             return;
@@ -76,7 +91,7 @@ class Player {
         }
     }
 
-    getRect() {
+    getRect(): Rect {
         return { x: this.x, y: this.y, w: this.width, h: this.height };
     }
 }
