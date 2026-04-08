@@ -1,38 +1,29 @@
 const HighScores = {
-    KEY: 'alienInvadersHighScores',
-    MAX: 5,
+    _cache: [],
 
-    load() {
-        try {
-            const data = localStorage.getItem(this.KEY);
-            return data ? JSON.parse(data) : [];
-        } catch (e) {
-            return [];
-        }
-    },
-
-    save(scores) {
-        try {
-            localStorage.setItem(this.KEY, JSON.stringify(scores));
-        } catch (e) { /* ignore */ }
+    refresh() {
+        return fetch('/api/scores')
+            .then(r => r.json())
+            .then(scores => { this._cache = scores; return scores; })
+            .catch(() => this._cache);
     },
 
     getHighest() {
-        const scores = this.load();
-        return scores.length > 0 ? scores[0] : 0;
+        return this._cache.length > 0 ? this._cache[0].score : 0;
     },
 
-    isHighScore(score) {
-        const scores = this.load();
-        return scores.length < this.MAX || score > scores[scores.length - 1];
+    getCached() {
+        return this._cache;
     },
 
-    add(score) {
-        const scores = this.load();
-        scores.push(score);
-        scores.sort((a, b) => b - a);
-        if (scores.length > this.MAX) scores.length = this.MAX;
-        this.save(scores);
-        return scores;
+    add(name, score) {
+        return fetch('/api/scores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, score }),
+        })
+            .then(r => r.json())
+            .then(scores => { this._cache = scores; return scores; })
+            .catch(() => this._cache);
     },
 };

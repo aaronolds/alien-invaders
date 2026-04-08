@@ -22,15 +22,43 @@
                 lastTime = performance.now();
             }
         }
+
+        // ESC to quit current game and return to name entry
+        if (e.code === 'Escape' && gameState && gameState.state !== 'enterName') {
+            if (gameState.score > 0 && gameState.playerName && !gameState.scoreSaved) {
+                HighScores.add(gameState.playerName, gameState.score);
+            }
+            initEnterName();
+        }
+
+        // Name entry input
+        if (gameState && gameState.state === 'enterName') {
+            if (e.code === 'Backspace') {
+                gameState.playerName = gameState.playerName.slice(0, -1);
+            } else if (e.code === 'Enter' && gameState.playerName.length > 0) {
+                startGame();
+            } else if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key) && gameState.playerName.length < 10) {
+                gameState.playerName += e.key.toUpperCase();
+            }
+        }
     });
 
     let player, alienGrid, shields, gameState, lastTime;
 
-    function init() {
+    function initEnterName() {
+        gameState = { state: 'enterName', playerName: '', score: 0, level: 0, levelTimer: 0, scoreSaved: false };
+        HighScores.refresh();
+    }
+
+    function startGame() {
         player = new Player(W, H);
         alienGrid = new AlienGrid(W, getLevelConfig(0));
         shields = createShields(W, player.y - 70);
-        gameState = { state: 'playing', score: 0, level: 0, levelTimer: 0, scoreSaved: false };
+        gameState.state = 'playing';
+        gameState.score = 0;
+        gameState.level = 0;
+        gameState.levelTimer = 0;
+        gameState.scoreSaved = false;
         lastTime = performance.now();
     }
 
@@ -41,6 +69,13 @@
     }
 
     function gameLoop(now) {
+        if (gameState.state === 'enterName') {
+            ctx.clearRect(0, 0, W, H);
+            HUD.drawEnterName(ctx, gameState.playerName, W, H);
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
         const dt = Math.min((now - lastTime) / 1000, 0.05); // cap dt
         lastTime = now;
 
@@ -57,15 +92,15 @@
             }
         }
 
-        // Save high score on game over
-        if (gameState.state === 'gameOver' && !gameState.scoreSaved) {
-            HighScores.add(gameState.score);
+        // Save high score on game over or win
+        if ((gameState.state === 'gameOver' || gameState.state === 'won') && !gameState.scoreSaved) {
+            HighScores.add(gameState.playerName, gameState.score);
             gameState.scoreSaved = true;
         }
 
-        // Handle restart
+        // Handle restart — go back to name entry for a new player
         if ((gameState.state === 'gameOver' || gameState.state === 'won') && keys['Enter']) {
-            init();
+            initEnterName();
         }
 
         // Render
@@ -88,6 +123,6 @@
         requestAnimationFrame(gameLoop);
     }
 
-    init();
+    initEnterName();
     requestAnimationFrame(gameLoop);
 })();
