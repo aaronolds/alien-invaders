@@ -1,7 +1,7 @@
 {
   "name": "alien-invaders",
   "version": "1.0.0",
-  "description": "A classic Space Invaders clone built with HTML5 Canvas and vanilla JavaScript. No dependencies, no build tools — just open and play.",
+  "description": "A classic Space Invaders clone built with HTML5 Canvas and vanilla JavaScript, using TypeScript with a build step for development and startup.",
   "main": "server.js",
   "scripts": {
     "build": "tsc",
