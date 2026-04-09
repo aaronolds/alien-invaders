@@ -1,11 +1,11 @@
 (function () {
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    const W: number = canvas.width;
+    const H: number = canvas.height;
 
     // Input tracking
-    const keys = {};
+    const keys: Record<string, boolean> = {};
     window.addEventListener('keydown', e => {
         keys[e.code] = true;
         e.preventDefault();
@@ -43,14 +43,18 @@
         }
     });
 
-    let player, alienGrid, shields, gameState, lastTime;
+    let player!: Player;
+    let alienGrid!: AlienGrid;
+    let shields!: Shield[];
+    let gameState!: GameState;
+    let lastTime!: number;
 
-    function initEnterName() {
+    function initEnterName(): void {
         gameState = { state: 'enterName', playerName: '', score: 0, level: 0, levelTimer: 0, scoreSaved: false };
         HighScores.refresh();
     }
 
-    function startGame() {
+    function startGame(): void {
         player = new Player(W, H);
         alienGrid = new AlienGrid(W, H, getLevelConfig(0));
         shields = createShields(W, player.y - 70);
@@ -62,13 +66,13 @@
         lastTime = performance.now();
     }
 
-    function initLevel(level) {
+    function initLevel(level: number): void {
         alienGrid = new AlienGrid(W, H, getLevelConfig(level));
         shields = createShields(W, player.y - 70);
         lastTime = performance.now();
     }
 
-    function gameLoop(now) {
+    function gameLoop(now: number): void {
         if (gameState.state === 'enterName') {
             ctx.clearRect(0, 0, W, H);
             HUD.drawEnterName(ctx, gameState.playerName, W, H);

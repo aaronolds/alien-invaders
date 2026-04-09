@@ -1,13 +1,13 @@
 const Collision = {
     // AABB rectangle overlap test
-    rectOverlap(a, b) {
+    rectOverlap(a: Rect, b: Rect): boolean {
         return a.x < b.x + b.w &&
                a.x + a.w > b.x &&
                a.y < b.y + b.h &&
                a.y + a.h > b.y;
     },
 
-    check(player, alienGrid, shields, gameState) {
+    check(player: Player, alienGrid: AlienGrid, shields: Shield[], gameState: GameState): void {
         // Player bullets vs aliens
         for (let bi = player.bullets.length - 1; bi >= 0; bi--) {
             const bullet = player.bullets[bi];
@@ -15,7 +15,7 @@ const Collision = {
             let bulletHit = false;
             for (const alien of alienGrid.aliens) {
                 if (!alien.alive) continue;
-                const ar = { x: alien.x, y: alien.y, w: alien.width, h: alien.height };
+                const ar: Rect = { x: alien.x, y: alien.y, w: alien.width, h: alien.height };
                 if (this.rectOverlap(br, ar)) {
                     alien.alive = false;
                     player.bullets.splice(bi, 1);
@@ -64,7 +64,7 @@ const Collision = {
         // Alien bodies vs player
         for (const alien of alienGrid.aliens) {
             if (!alien.alive) continue;
-            const ar = { x: alien.x, y: alien.y, w: alien.width, h: alien.height };
+            const ar: Rect = { x: alien.x, y: alien.y, w: alien.width, h: alien.height };
             if (this.rectOverlap(ar, pr)) {
                 alien.alive = false;
                 gameState.score += alien.points;

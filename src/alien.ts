@@ -1,5 +1,24 @@
 class AlienGrid {
-    constructor(canvasWidth, canvasHeight, levelConfig) {
+    canvasWidth: number;
+    canvasHeight: number;
+    scale: number;
+    cols: number;
+    rows: number;
+    padding: number;
+    aliens: Alien[];
+    direction: number;
+    speed: number;
+    dropDistance: number;
+    bullets: Bullet[];
+    shootInterval: number;
+    shootTimer: number;
+    speedBoostPerDrop: number;
+    divebombEnabled: boolean;
+    divebombRate: number;
+    maxDivebombers: number;
+    divebombTimer: number;
+
+    constructor(canvasWidth: number, canvasHeight: number, levelConfig: LevelConfig) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
         this.scale = 3;
@@ -24,7 +43,7 @@ class AlienGrid {
         this._initGrid();
     }
 
-    _initGrid() {
+    _initGrid(): void {
         const alienTypes = [
             { sprite: SPRITES.alien1, points: 30, color: '#f55' },
             { sprite: SPRITES.alien2, points: 20, color: '#ff5' },
@@ -52,9 +71,8 @@ class AlienGrid {
                     alive: true,
                     col: col,
                     row: row,
-                    // Divebomb state
                     divebombing: false,
-                    divebombPhase: null, // 'descending' or 'returning'
+                    divebombPhase: null,
                     homeX: 0,
                     homeY: 0,
                 });
@@ -63,7 +81,7 @@ class AlienGrid {
 
         // Randomly convert 4-5 aliens into seahawk type
         const count = 4 + Math.floor(Math.random() * 2);
-        const indices = [];
+        const indices: number[] = [];
         while (indices.length < count) {
             const i = Math.floor(Math.random() * this.aliens.length);
             if (!indices.includes(i)) indices.push(i);
@@ -78,7 +96,7 @@ class AlienGrid {
         }
     }
 
-    update(dt, playerX) {
+    update(dt: number, playerX: number): void {
         const living = this.aliens.filter(a => a.alive);
         if (living.length === 0) return;
 
@@ -134,7 +152,7 @@ class AlienGrid {
                     diver.divebombPhase = 'descending';
                     diver.homeX = diver.x;
                     diver.homeY = diver.y;
-                    diver.divebombTargetX = playerX !== undefined ? playerX : diver.x;
+                    diver.divebombTargetX = playerX;
                 }
             }
         }
@@ -145,7 +163,7 @@ class AlienGrid {
             if (a.divebombPhase === 'descending') {
                 a.y += diveSpeed * dt;
                 // Steer toward target x
-                const dx = a.divebombTargetX - a.x;
+                const dx = (a.divebombTargetX ?? a.x) - a.x;
                 a.x += Math.sign(dx) * Math.min(Math.abs(dx), diveSpeed * 0.8 * dt);
                 // Past bottom of screen — start returning
                 if (a.y > this.canvasHeight + 20) {
@@ -192,8 +210,8 @@ class AlienGrid {
         }
     }
 
-    _getBottomAliens(living) {
-        const colMap = {};
+    _getBottomAliens(living: Alien[]): Alien[] {
+        const colMap: Record<number, Alien> = {};
         for (const a of living) {
             if (!colMap[a.col] || a.row > colMap[a.col].row) {
                 colMap[a.col] = a;
@@ -202,7 +220,7 @@ class AlienGrid {
         return Object.values(colMap);
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D): void {
         for (const a of this.aliens) {
             if (!a.alive) continue;
             drawSprite(ctx, a.sprite, a.x, a.y, this.scale, a.color);
@@ -212,11 +230,11 @@ class AlienGrid {
         }
     }
 
-    allDead() {
+    allDead(): boolean {
         return this.aliens.every(a => !a.alive);
     }
 
-    lowestY() {
+    lowestY(): number {
         let maxY = 0;
         for (const a of this.aliens) {
             if (a.alive && !a.divebombing) {

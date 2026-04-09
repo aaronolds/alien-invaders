@@ -1,4 +1,4 @@
-const LEVELS = [
+const LEVELS: LevelConfig[] = [
     { speed: 30, shootInterval: 1.5, divebombEnabled: false, divebombRate: 0,   maxDivebombers: 0, speedBoostPerDrop: 3 },
     { speed: 40, shootInterval: 1.3, divebombEnabled: true,  divebombRate: 4,   maxDivebombers: 1, speedBoostPerDrop: 5 },
     { speed: 50, shootInterval: 1.1, divebombEnabled: true,  divebombRate: 3,   maxDivebombers: 2, speedBoostPerDrop: 7 },
@@ -6,7 +6,7 @@ const LEVELS = [
     { speed: 75, shootInterval: 0.7, divebombEnabled: true,  divebombRate: 2,   maxDivebombers: 3, speedBoostPerDrop: 14 },
 ];
 
-function getLevelConfig(level) {
+function getLevelConfig(level: number): LevelConfig {
     if (level < LEVELS.length) return LEVELS[level];
     // Scale beyond defined levels
     const extra = level - LEVELS.length + 1;

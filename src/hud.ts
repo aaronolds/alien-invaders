@@ -1,5 +1,5 @@
 const HUD = {
-    draw(ctx, score, lives, canvasWidth, level) {
+    draw(ctx: CanvasRenderingContext2D, score: number, lives: number, canvasWidth: number, level: number): void {
         ctx.fillStyle = '#fff';
         ctx.font = '20px monospace';
         ctx.textAlign = 'left';
@@ -21,7 +21,7 @@ const HUD = {
         }
     },
 
-    drawGameOver(ctx, score, canvasWidth, canvasHeight) {
+    drawGameOver(ctx: CanvasRenderingContext2D, score: number, canvasWidth: number, canvasHeight: number): void {
         const scores = HighScores.getCached();
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -50,7 +50,7 @@ const HUD = {
         ctx.fillText('Press ENTER for new player', canvasWidth / 2, canvasHeight / 2 + 135);
     },
 
-    drawPaused(ctx, canvasWidth, canvasHeight) {
+    drawPaused(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -63,7 +63,7 @@ const HUD = {
         ctx.fillText('Press P to resume', canvasWidth / 2, canvasHeight / 2 + 30);
     },
 
-    drawWin(ctx, score, canvasWidth, canvasHeight) {
+    drawWin(ctx: CanvasRenderingContext2D, score: number, canvasWidth: number, canvasHeight: number): void {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -94,7 +94,7 @@ const HUD = {
         ctx.fillText('Press ENTER for new player', canvasWidth / 2, canvasHeight / 2 + 200);
     },
 
-    drawLevelComplete(ctx, level, canvasWidth, canvasHeight) {
+    drawLevelComplete(ctx: CanvasRenderingContext2D, level: number, canvasWidth: number, canvasHeight: number): void {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -108,7 +108,7 @@ const HUD = {
         ctx.fillText('Get Ready...', canvasWidth / 2, canvasHeight / 2 + 25);
     },
 
-    drawEnterName(ctx, name, canvasWidth, canvasHeight) {
+    drawEnterName(ctx: CanvasRenderingContext2D, name: string, canvasWidth: number, canvasHeight: number): void {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
