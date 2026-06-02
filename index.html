@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alien Invaders</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Arcade — Pick a Game</title>
+    <link rel="stylesheet" href="/css/launcher.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="1024" height="768"></canvas>
-    <script src="js/sprites.js"></script>
-    <script src="js/levels.js"></script>
-    <script src="js/bullet.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/alien.js"></script>
-    <script src="js/shield.js"></script>
-    <script src="js/scores.js"></script>
-    <script src="js/collision.js"></script>
-    <script src="js/hud.js"></script>
-    <script src="js/main.js"></script>
+    <main class="launcher">
+        <header class="launcher-header">
+            <h1>ARCADE</h1>
+            <p>Select a game to play</p>
+        </header>
+        <section id="gameGrid" class="game-grid"></section>
+    </main>
+    <script src="/js/launcher.js"></script>
 </body>
 </html>

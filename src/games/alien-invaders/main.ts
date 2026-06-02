@@ -4,6 +4,8 @@
     const W: number = canvas.width;
     const H: number = canvas.height;
 
+    HighScores.configure('alien-invaders');
+
     // Input tracking
     const keys: Record<string, boolean> = {};
     window.addEventListener('keydown', e => {
