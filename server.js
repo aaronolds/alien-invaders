@@ -21,7 +21,11 @@ const MIME_TYPES = {
 function readScoreStore() {
     try {
         const raw = JSON.parse(fs.readFileSync(SCORES_FILE, 'utf8'));
-        if (Array.isArray(raw)) return { 'alien-invaders': raw }; // migrate legacy format
+        if (Array.isArray(raw)) {
+            const migrated = { 'alien-invaders': raw };
+            writeScoreStore(migrated);
+            return migrated; // migrate legacy format
+        }
         if (raw && typeof raw === 'object') return raw;
         return {};
     } catch (e) {
@@ -38,8 +42,16 @@ function isValidGame(game) {
 }
 
 function serveStatic(req, res, pathname) {
-    let urlPath = decodeURIComponent(pathname);
+    let urlPath;
+    try {
+        urlPath = decodeURIComponent(pathname);
+    } catch (e) {
+        res.writeHead(400);
+        res.end('Bad Request');
+        return;
+    }
     if (urlPath.endsWith('/')) urlPath += 'index.html';
+    urlPath = urlPath.replace(/^\/+/, '');
 
     // Resolve within ROOT and reject path traversal.
     const filePath = path.normalize(path.join(ROOT, urlPath));
@@ -96,7 +108,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/scores' && req.method === 'POST') {
         try {
             const { game, name, score } = await parseBody(req);
-            if (!isValidGame(game) || typeof name !== 'string' || typeof score !== 'number') {
+            if (!isValidGame(game) || typeof name !== 'string' || !Number.isFinite(score)) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Invalid data' }));
                 return;
