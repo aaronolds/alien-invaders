@@ -16,3 +16,19 @@ body {
 canvas {
     border: 1px solid #333;
 }
+
+.back-link {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    color: #8a93b8;
+    text-decoration: none;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    z-index: 10;
+}
+
+.back-link:hover {
+    color: #e7ecff;
+}

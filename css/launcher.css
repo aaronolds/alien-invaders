@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle at 50% 0%, #141a2e 0%, #05060d 70%);
+    color: #e7ecff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 64px 24px;
+}
+
+.launcher {
+    width: 100%;
+    max-width: 960px;
+}
+
+.launcher-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.launcher-header h1 {
+    font-size: 64px;
+    letter-spacing: 12px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #37ff8b, #4db8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.launcher-header p {
+    margin-top: 8px;
+    color: #8a93b8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.game-card {
+    --accent: #37ff8b;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px;
+    border-radius: 16px;
+    background: #10152a;
+    border: 1px solid #1f2742;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent);
+}
+
+.game-icon {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.game-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.game-desc {
+    font-size: 14px;
+    color: #97a0c4;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.game-play {
+    margin-top: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+}

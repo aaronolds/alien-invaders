@@ -1,6 +1,14 @@
-[
-  {
-    "name": "AARON",
-    "score": 4150
-  }
-]
+{
+  "alien-invaders": [
+    {
+      "name": "AARON",
+      "score": 4150
+    }
+  ],
+  "pong": [
+    {
+      "name": "NEO",
+      "score": 11
+    }
+  ]
+}

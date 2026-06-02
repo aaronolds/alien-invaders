@@ -1,12 +1,3 @@
-type SpriteData = number[][];
-
-interface Rect {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-}
-
 interface LevelConfig {
     speed: number;
     shootInterval: number;
@@ -14,11 +5,6 @@ interface LevelConfig {
     divebombRate: number;
     maxDivebombers: number;
     speedBoostPerDrop: number;
-}
-
-interface ScoreEntry {
-    name: string;
-    score: number;
 }
 
 type GameStateName = 'enterName' | 'playing' | 'paused' | 'gameOver' | 'won' | 'levelComplete';
